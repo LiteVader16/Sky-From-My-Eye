@@ -5,20 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sky Matrix</title>
     <style>
-        /* Light Mode Variables (Default) */
         :root {
             --bg-color: #ffffff;
             --text-color: #111111;
-            --card-back-bg: #f0f0f0;
+            --card-back-bg: #ffffff; /* Changed to pure white */
             --button-bg: #111111;
             --button-text: #ffffff;
         }
 
-        /* Dark Mode Variables */
         body.dark-mode {
             --bg-color: #111111;
             --text-color: #ffffff;
-            --card-back-bg: #222222;
+            --card-back-bg: #111111;
             --button-bg: #ffffff;
             --button-text: #111111;
         }
@@ -27,12 +25,11 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
-            padding: 60px 20px 20px 20px; /* Extra top padding for the button */
+            padding: 60px 20px 20px 20px;
             font-family: Arial, sans-serif;
             transition: background-color 0.4s, color 0.4s;
         }
 
-        /* The Toggle Button */
         #theme-toggle {
             position: fixed;
             top: 20px;
@@ -45,14 +42,13 @@
             cursor: pointer;
             font-weight: bold;
             z-index: 1000;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             transition: background-color 0.4s, color 0.4s;
         }
 
         .matrix {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 10px; /* Changed from 5px to 10px */
+            gap: 10px; 
             max-width: 1200px;
             margin: 0 auto;
         }
@@ -107,21 +103,24 @@
         }
 
         .card-back p {
-            margin: 8px 0;
-            font-size: 14px;
+            margin: 5px 0;
+            font-size: 15px;
             line-height: 1.4;
+        }
+        
+        .location-text {
+            font-weight: bold;
+            margin-bottom: 12px !important;
+            font-size: 16px !important;
         }
     </style>
 </head>
 <body>
 
-    <!-- Dark/Light Mode Button -->
     <button id="theme-toggle" onclick="toggleTheme()">🌙 Night Mode</button>
-
     <div class="matrix" id="photo-matrix"></div>
 
     <script>
-        // 1. DATA LIST
         const skyData = [
             { file: "sky_01.jpeg", location: "Veraval, India", time: "2026:04:04 19:17:33" },
             { file: "sky_02.jpeg", location: "Unknown Location", time: "2025:10:17 04:06:22" },
@@ -134,10 +133,40 @@
             { file: "sky_09.jpeg", location: "Gujarat, India", time: "2025:12:12 07:26:00" }
         ];
 
-        // 2. MATRIX BUILDER
+        // This function automatically translates your date data
+        function formatDateTime(dateTimeStr) {
+            if (!dateTimeStr || dateTimeStr.includes("Unknown")) return { date: "Unknown Date", time: "" };
+            
+            let parts = dateTimeStr.split(" ");
+            if (parts.length < 2) return { date: dateTimeStr, time: "" };
+
+            let dateParts = parts[0].split(":");
+            let timeParts = parts[1].split(":");
+
+            let year = parseInt(dateParts[0]);
+            let month = parseInt(dateParts[1]) - 1;
+            let day = parseInt(dateParts[2]);
+
+            // Add the "st", "nd", "rd", "th" suffix
+            const getOrdinal = (n) => {
+                let s = ["th", "st", "nd", "rd"];
+                let v = n % 100;
+                return n + (s[(v - 20) % 10] || s[v] || s[0]);
+            };
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            
+            return { 
+                date: `${getOrdinal(day)} ${monthNames[month]}, ${year}`, 
+                time: `${timeParts[0]}:${timeParts[1]} hours` 
+            };
+        }
+
         const matrixContainer = document.getElementById('photo-matrix');
 
         skyData.forEach(photo => {
+            const dt = formatDateTime(photo.time);
+            const timeHTML = dt.time ? `<p>${dt.time}</p>` : '';
+            
             const cardHTML = `
                 <div class="card" onclick="flipCard(this)">
                     <div class="card-inner">
@@ -145,8 +174,9 @@
                             <img src="Sky Photos/${photo.file}" alt="Sky photo">
                         </div>
                         <div class="card-back">
-                            <p><strong>Location:</strong> ${photo.location}</p>
-                            <p><strong>Time:</strong> ${photo.time}</p>
+                            <p class="location-text">${photo.location}</p>
+                            <p>${dt.date}</p>
+                            ${timeHTML}
                         </div>
                     </div>
                 </div>
@@ -154,35 +184,17 @@
             matrixContainer.innerHTML += cardHTML;
         });
 
-        // 3. INTERACTIVITY SCRIPTS
-        
-        // Logic to ensure only one card is flipped at a time
         function flipCard(clickedCard) {
             const isCurrentlyFlipped = clickedCard.classList.contains('flipped');
-            
-            // Unflip all cards first
-            document.querySelectorAll('.card').forEach(card => {
-                card.classList.remove('flipped');
-            });
-
-            // If the clicked card wasn't already flipped, flip it now
-            if (!isCurrentlyFlipped) {
-                clickedCard.classList.add('flipped');
-            }
+            document.querySelectorAll('.card').forEach(card => card.classList.remove('flipped'));
+            if (!isCurrentlyFlipped) clickedCard.classList.add('flipped');
         }
 
-        // Logic for the Light/Dark toggle button
         function toggleTheme() {
             const body = document.body;
             const button = document.getElementById('theme-toggle');
-            
             body.classList.toggle('dark-mode');
-            
-            if (body.classList.contains('dark-mode')) {
-                button.innerHTML = '☀️ Day Mode';
-            } else {
-                button.innerHTML = '🌙 Night Mode';
-            }
+            button.innerHTML = body.classList.contains('dark-mode') ? '☀️ Day Mode' : '🌙 Night Mode';
         }
     </script>
 </body>
