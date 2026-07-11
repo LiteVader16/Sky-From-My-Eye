@@ -6,27 +6,24 @@
     <title>Sky Matrix</title>
     <style>
         body {
-            background-color: #111; /* Dark background to make colors pop */
+            background-color: #111;
             margin: 0;
             padding: 20px;
             font-family: Arial, sans-serif;
         }
 
-        /* The Grid layout */
         .matrix {
             display: grid;
-            /* Creates columns that fit the screen, minimum 250px wide */
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 15px; /* 15px space between images */
+            gap: 5px; 
             max-width: 1200px;
             margin: 0 auto;
         }
 
-        /* The Card structure */
         .card {
             background-color: transparent;
-            aspect-ratio: 3 / 4; /* 4:3 portrait ratio */
-            perspective: 1000px; /* Gives the 3D flip effect depth */
+            aspect-ratio: 3 / 4; 
+            perspective: 1000px; 
             cursor: pointer;
         }
 
@@ -35,33 +32,30 @@
             width: 100%;
             height: 100%;
             text-align: center;
-            transition: transform 0.6s; /* Animation speed */
+            transition: transform 0.6s; 
             transform-style: preserve-3d;
         }
 
-        /* This class is added when you click */
         .card.flipped .card-inner {
-            transform: rotateY(180deg); /* Flips on the long edge */
+            transform: rotateY(180deg); 
         }
 
         .card-front, .card-back {
             position: absolute;
             width: 100%;
             height: 100%;
-            -webkit-backface-visibility: hidden; /* Safari support */
+            -webkit-backface-visibility: hidden; 
             backface-visibility: hidden;
             border-radius: 4px;
             overflow: hidden;
         }
 
-        /* Front Image Styling */
         .card-front img {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* Ensures the image fills the 3:4 box without squishing */
+            object-fit: cover; 
         }
 
-        /* Back Text Styling */
         .card-back {
             background-color: #222;
             color: #fff;
@@ -83,40 +77,48 @@
 </head>
 <body>
 
-    <div class="matrix">
+    <!-- This empty box is where the script will automatically build your cards -->
+    <div class="matrix" id="photo-matrix"></div>
 
-        <!-- PHOTO 1 -->
-        <div class="card" onclick="this.classList.toggle('flipped')">
-            <div class="card-inner">
-                <div class="card-front">
-                    <!-- Put your image name here -->
-                    <img src="photo1.JPG" alt="Sky photo">
-                </div>
-                <div class="card-back">
-                    <p><strong>Location:</strong> Replace with Location</p>
-                    <p><strong>Time:</strong> Replace with Date/Time</p>
-                    <p><strong>Notes:</strong> Add your personal notes here!</p>
-                </div>
-            </div>
-        </div>
+    <script>
+        // 1. YOUR PHOTO DATA LIST
+        // To add more photos later, simply add a new line inside these brackets.
+        const skyData = [
+            { file: "sky_01.jpg", location: "Location 1", time: "Date/Time 1", notes: "Your notes here" },
+            { file: "sky_02.jpg", location: "Location 2", time: "Date/Time 2", notes: "Your notes here" },
+            { file: "sky_03.jpg", location: "Location 3", time: "Date/Time 3", notes: "Your notes here" },
+            { file: "sky_04.jpg", location: "Location 4", time: "Date/Time 4", notes: "Your notes here" },
+            { file: "sky_05.jpg", location: "Location 5", time: "Date/Time 5", notes: "Your notes here" },
+            { file: "sky_06.jpg", location: "Location 6", time: "Date/Time 6", notes: "Your notes here" },
+            { file: "sky_07.jpg", location: "Location 7", time: "Date/Time 7", notes: "Your notes here" },
+            { file: "sky_08.jpg", location: "Location 8", time: "Date/Time 8", notes: "Your notes here" },
+            { file: "sky_09.jpg", location: "Location 9", time: "Date/Time 9", notes: "Your notes here" },
+            { file: "sky_10.jpg", location: "Location 10", time: "Date/Time 10", notes: "Your notes here" },
+            { file: "sky_11.jpg", location: "Location 11", time: "Date/Time 11", notes: "Your notes here" }
+        ];
 
-        <!-- PHOTO 2 -->
-        <div class="card" onclick="this.classList.toggle('flipped')">
-            <div class="card-inner">
-                <div class="card-front">
-                    <img src="photo2.JPG" alt="Sky photo">
-                </div>
-                <div class="card-back">
-                    <p><strong>Location:</strong> Replace with Location</p>
-                    <p><strong>Time:</strong> Replace with Date/Time</p>
-                    <p><strong>Notes:</strong> Add your personal notes here!</p>
-                </div>
-            </div>
-        </div>
-        
-        <!-- You can copy and paste the block above for Photos 3, 4, and 5 -->
+        // 2. THE AUTOMATION SCRIPT
+        // You never need to touch anything below this line. 
+        const matrixContainer = document.getElementById('photo-matrix');
 
-    </div>
-
+        skyData.forEach(photo => {
+            const cardHTML = `
+                <div class="card" onclick="this.classList.toggle('flipped')">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <!-- Notice it automatically points to your "Sky Photos" folder -->
+                            <img src="Sky Photos/${photo.file}" alt="Sky photo">
+                        </div>
+                        <div class="card-back">
+                            <p><strong>Location:</strong> ${photo.location}</p>
+                            <p><strong>Time:</strong> ${photo.time}</p>
+                            <p><strong>Notes:</strong> ${photo.notes}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            matrixContainer.innerHTML += cardHTML;
+        });
+    </script>
 </body>
 </html>
