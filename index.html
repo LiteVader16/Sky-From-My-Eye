@@ -5,17 +5,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sky Matrix</title>
     <style>
+        /* Light Mode Variables (Default) */
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #111111;
+            --card-back-bg: #f0f0f0;
+            --button-bg: #111111;
+            --button-text: #ffffff;
+        }
+
+        /* Dark Mode Variables */
+        body.dark-mode {
+            --bg-color: #111111;
+            --text-color: #ffffff;
+            --card-back-bg: #222222;
+            --button-bg: #ffffff;
+            --button-text: #111111;
+        }
+
         body {
-            background-color: #111;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             margin: 0;
-            padding: 20px;
+            padding: 60px 20px 20px 20px; /* Extra top padding for the button */
             font-family: Arial, sans-serif;
+            transition: background-color 0.4s, color 0.4s;
+        }
+
+        /* The Toggle Button */
+        #theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background-color 0.4s, color 0.4s;
         }
 
         .matrix {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 10px; 
+            gap: 10px; /* Changed from 5px to 10px */
             max-width: 1200px;
             margin: 0 auto;
         }
@@ -57,8 +94,8 @@
         }
 
         .card-back {
-            background-color: #222;
-            color: #fff;
+            background-color: var(--card-back-bg);
+            color: var(--text-color);
             transform: rotateY(180deg);
             display: flex;
             flex-direction: column;
@@ -66,6 +103,7 @@
             align-items: center;
             padding: 20px;
             box-sizing: border-box;
+            transition: background-color 0.4s, color 0.4s;
         }
 
         .card-back p {
@@ -77,79 +115,31 @@
 </head>
 <body>
 
-    <!-- The visual grid will be built here -->
+    <!-- Dark/Light Mode Button -->
+    <button id="theme-toggle" onclick="toggleTheme()">🌙 Night Mode</button>
+
     <div class="matrix" id="photo-matrix"></div>
 
     <script>
-        // ==========================================
-        // 1. PASTE YOUR COLAB DATA BELOW THIS LINE
-        // Replace the dummy list below with the text you copied from your sky_data.js file.
-        // ==========================================
-        
-      const skyData = [
-    {
-        "file": "sky_01.jpeg",
-        "location": "Veraval, India",
-        "time": "2026:04:04 19:17:33",
-        "notes": "Click Edit in GitHub on the sky_data.js file to add your notes!"
-    },
-    {
-        "file": "sky_02.jpeg",
-        "location": "Unknown Location",
-        "time": "2025:10:17 04:06:22",
-        "notes": "Click Edit in GitHub on the sky_data.js file to add your notes!"
-    },
-    {
-        "file": "sky_03.jpeg",
-        "location": "Unknown Location",
-        "time": "2025:10:17 04:07:57",
-        "notes": "Click Edit in GitHub on the sky_data.js file to add your notes!"
-    },
-    {
-        "file": "sky_04.jpeg",
-        "location": "Bengaluru, India",
-        "time": "2026:05:12 18:47:36",
-        "notes": "Click Edit in GitHub on the sky_data.js file to add your notes!"
-    },
-    {
-        "file": "sky_05.jpeg",
-        "location": "Haryana, India",
-        "time": "2021:07:24 11:39:05",
-        "notes": "Click Edit in GitHub on the sky_data.js file to add your notes!"
-    },
-    {
-        "file": "sky_06.jpeg",
-        "location": "Unknown Location",
-        "time": "2021:07:24 11:33:33",
-        "notes": "Click Edit in GitHub on the sky_data.js file to add your notes!"
-    },
-    {
-        "file": "sky_07.jpeg",
-        "location": "Perth, Australia",
-        "time": "2025:03:24 09:17:49",
-        "notes": "Click Edit in GitHub on the sky_data.js file to add your notes!"
-    },
-    {
-        "file": "sky_08.jpeg",
-        "location": "Mumbai, India",
-        "time": "2025:05:17 19:12:38",
-        "notes": "Click Edit in GitHub on the sky_data.js file to add your notes!"
-    },
-    {
-        "file": "sky_09.jpeg",
-        "location": "Gujarat, India",
-        "time": "2025:12:12 07:26:00",
-        "notes": "Click Edit in GitHub on the sky_data.js file to add your notes!"
-    }
-];
-        // ==========================================
-        // 2. THE AUTOMATION SCRIPT (Do not touch)
-        // ==========================================
+        // 1. DATA LIST
+        const skyData = [
+            { file: "sky_01.jpeg", location: "Veraval, India", time: "2026:04:04 19:17:33" },
+            { file: "sky_02.jpeg", location: "Unknown Location", time: "2025:10:17 04:06:22" },
+            { file: "sky_03.jpeg", location: "Unknown Location", time: "2025:10:17 04:07:57" },
+            { file: "sky_04.jpeg", location: "Bengaluru, India", time: "2026:05:12 18:47:36" },
+            { file: "sky_05.jpeg", location: "Haryana, India", time: "2021:07:24 11:39:05" },
+            { file: "sky_06.jpeg", location: "Unknown Location", time: "2021:07:24 11:33:33" },
+            { file: "sky_07.jpeg", location: "Perth, Australia", time: "2025:03:24 09:17:49" },
+            { file: "sky_08.jpeg", location: "Mumbai, India", time: "2025:05:17 19:12:38" },
+            { file: "sky_09.jpeg", location: "Gujarat, India", time: "2025:12:12 07:26:00" }
+        ];
+
+        // 2. MATRIX BUILDER
         const matrixContainer = document.getElementById('photo-matrix');
 
         skyData.forEach(photo => {
             const cardHTML = `
-                <div class="card" onclick="this.classList.toggle('flipped')">
+                <div class="card" onclick="flipCard(this)">
                     <div class="card-inner">
                         <div class="card-front">
                             <img src="Sky Photos/${photo.file}" alt="Sky photo">
@@ -163,6 +153,37 @@
             `;
             matrixContainer.innerHTML += cardHTML;
         });
+
+        // 3. INTERACTIVITY SCRIPTS
+        
+        // Logic to ensure only one card is flipped at a time
+        function flipCard(clickedCard) {
+            const isCurrentlyFlipped = clickedCard.classList.contains('flipped');
+            
+            // Unflip all cards first
+            document.querySelectorAll('.card').forEach(card => {
+                card.classList.remove('flipped');
+            });
+
+            // If the clicked card wasn't already flipped, flip it now
+            if (!isCurrentlyFlipped) {
+                clickedCard.classList.add('flipped');
+            }
+        }
+
+        // Logic for the Light/Dark toggle button
+        function toggleTheme() {
+            const body = document.body;
+            const button = document.getElementById('theme-toggle');
+            
+            body.classList.toggle('dark-mode');
+            
+            if (body.classList.contains('dark-mode')) {
+                button.innerHTML = '☀️ Day Mode';
+            } else {
+                button.innerHTML = '🌙 Night Mode';
+            }
+        }
     </script>
 </body>
 </html>
