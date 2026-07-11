@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sky Matrix</title>
+    <style>
+        body {
+            background-color: #111; /* Dark background to make colors pop */
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+
+        /* The Grid layout */
+        .matrix {
+            display: grid;
+            /* Creates columns that fit the screen, minimum 250px wide */
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 5px; /* 5px space between images */
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* The Card structure */
+        .card {
+            background-color: transparent;
+            aspect-ratio: 3 / 4; /* 4:3 portrait ratio */
+            perspective: 1000px; /* Gives the 3D flip effect depth */
+            cursor: pointer;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s; /* Animation speed */
+            transform-style: preserve-3d;
+        }
+
+        /* This class is added when you click */
+        .card.flipped .card-inner {
+            transform: rotateY(180deg); /* Flips on the long edge */
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden; /* Safari support */
+            backface-visibility: hidden;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        /* Front Image Styling */
+        .card-front img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Ensures the image fills the 3:4 box without squishing */
+        }
+
+        /* Back Text Styling */
+        .card-back {
+            background-color: #222;
+            color: #fff;
+            transform: rotateY(180deg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .card-back p {
+            margin: 8px 0;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="matrix">
+
+        <!-- PHOTO 1 -->
+        <div class="card" onclick="this.classList.toggle('flipped')">
+            <div class="card-inner">
+                <div class="card-front">
+                    <!-- Put your image name here -->
+                    <img src="photo1.jpg" alt="Sky photo">
+                </div>
+                <div class="card-back">
+                    <p><strong>Location:</strong> Replace with Location</p>
+                    <p><strong>Time:</strong> Replace with Date/Time</p>
+                    <p><strong>Notes:</strong> Add your personal notes here!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- PHOTO 2 -->
+        <div class="card" onclick="this.classList.toggle('flipped')">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="photo2.jpg" alt="Sky photo">
+                </div>
+                <div class="card-back">
+                    <p><strong>Location:</strong> Replace with Location</p>
+                    <p><strong>Time:</strong> Replace with Date/Time</p>
+                    <p><strong>Notes:</strong> Add your personal notes here!</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- You can copy and paste the block above for Photos 3, 4, and 5 -->
+
+    </div>
+
+</body>
+</html>
